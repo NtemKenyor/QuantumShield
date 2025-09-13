@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>QuantumShield — Post‑Quantum Secure Messaging</title>
+  <meta name="description" content="QuantumShield — an open-source post-quantum secure messaging layer and reference client. Hybrid PQC + ECC for Matrix/XMPP interoperability." />
+  <style>
+    :root{
+      --bg:#06060a;
+      --accent:#7cf7ff;
+      --accent-2:#8a6cff;
+      --muted:#9aa4b2;
+      --card:#0d1117;
+      --glass: rgba(255,255,255,0.03);
+      --radius:14px;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, 'Roboto Mono', 'Segoe UI Mono', monospace;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;padding:0;
+      font-family: Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: radial-gradient(1200px 600px at 10% 10%, rgba(122,100,255,0.06), transparent 8%),
+                  radial-gradient(1000px 500px at 90% 80%, rgba(124,247,255,0.03), transparent 12%),
+                  var(--bg);
+      color:#e6eef6;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
+    header{position:relative;padding:28px 36px;display:flex;align-items:center;gap:20px}
+    .logo{display:flex;align-items:center;gap:14px}
+    .logo svg{width:56px;height:56px}
+    h1{font-size:22px;margin:0}
+    .nav{margin-left:auto;display:flex;gap:12px;align-items:center}
+    .btn{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#04121a;padding:10px 14px;border-radius:10px;font-weight:600;border:0;cursor:pointer}
+    .ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);padding:8px 12px;border-radius:10px;color:var(--muted)}
+
+    .hero{display:grid;grid-template-columns:1fr 420px;gap:36px;align-items:center;padding:40px 36px}
+    .kicker{color:var(--accent-2);font-weight:700;letter-spacing:0.08em;margin-bottom:12px}
+    .headline{font-size:40px;line-height:1.02;margin:0 0 16px}
+    .lead{color:var(--muted);margin-bottom:22px;max-width:66ch}
+    .feature-list{display:flex;flex-wrap:wrap;gap:10px}
+    .chip{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:8px 10px;border-radius:999px;font-weight:600;color:var(--accent);border:1px solid rgba(124,108,255,0.06)}
+
+    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:var(--radius);padding:22px;box-shadow:0 6px 28px rgba(4,6,10,0.6);border:1px solid rgba(255,255,255,0.04)}
+    .client-mock{height:420px;border-radius:12px;overflow:hidden;background:linear-gradient(180deg, rgba(4,6,10,0.75), rgba(7,8,12,0.4));position:relative}
+    .client-top{display:flex;gap:10px;padding:12px;border-bottom:1px solid rgba(255,255,255,0.02);align-items:center}
+    .dot{width:10px;height:10px;border-radius:50%;background:linear-gradient(180deg,#ff5d5d,#ff9a5d)}
+    .contact-row{display:flex;flex-direction:column;gap:6px;padding:16px}
+    .message{padding:12px;background:linear-gradient(180deg, rgba(124,247,255,0.06), rgba(138,108,255,0.03));border-radius:10px;color:#001018;font-weight:600}
+
+    main{padding:10px 36px 80px}
+    .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:26px}
+    .grid .card{min-height:160px}
+
+    section h2{margin:6px 0 12px}
+    .roadmap{display:flex;flex-direction:column;gap:12px}
+    .step{display:flex;gap:12px;align-items:flex-start}
+    .step .num{width:36px;height:36px;border-radius:8px;background:linear-gradient(90deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#04121a;font-weight:800}
+    .footer{display:flex;justify-content:space-between;align-items:center;padding:28px 36px;border-top:1px solid rgba(255,255,255,0.02);margin-top:36px}
+
+    /* subtle atom orbit animation */
+    .scene{position:absolute;inset:0;pointer-events:none}
+    .orbit{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);filter:blur(18px);opacity:0.14}
+    .orbit svg{width:800px;height:800px}
+
+    footer p{color:var(--muted);margin:0}
+
+    @media (max-width:980px){
+      .hero{grid-template-columns:1fr;padding:24px}
+      .client-mock{height:320px}
+      .grid{grid-template-columns:1fr}
+    }
+
+    /* code block */
+    pre{background:#071018;border-radius:10px;padding:12px;color:#bfeefc;overflow:auto;font-family:var(--mono);font-size:13px}
+
+    /* small animations */
+    .logo svg path{-webkit-animation:glow 4s linear infinite;animation:glow 4s linear infinite}
+    @keyframes glow{0%{opacity:0.7;filter:drop-shadow(0 0 0 rgba(124,108,255,0.0))}50%{opacity:1;filter:drop-shadow(0 6px 24px rgba(124,108,255,0.14))}100%{opacity:0.7;filter:drop-shadow(0 0 0 rgba(124,108,255,0.0))}}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+        <defs>
+          <linearGradient id="g1" x1="0" x2="1">
+            <stop offset="0" stop-color="#7cf7ff"/>
+            <stop offset="1" stop-color="#8a6cff"/>
+          </linearGradient>
+        </defs>
+        <rect x="6" y="6" width="52" height="52" rx="12" fill="url(#g1)" opacity="0.12" />
+        <g transform="translate(10,10) scale(0.8)">
+          <path d="M10 6c6 0 10 5 10 12s-4 12-10 12S0 24 0 18 4 6 10 6z" fill="url(#g1)"/>
+          <circle cx="26" cy="26" r="6" fill="#071018" opacity="0.6"/>
+        </g>
+      </svg>
+      <div>
+        <h1>QuantumShield</h1>
+        <div style="color:var(--muted);font-size:13px">Post‑Quantum Secure Messaging — Hybrid PQC + ECC</div>
+      </div>
+    </div>
+
+    <nav class="nav">
+      <a class="ghost" href="#features">Features</a>
+      <a class="ghost" href="#roadmap">Roadmap</a>
+      <a class="ghost" href="#get-involved">Get Involved</a>
+      <button class="btn" onclick="location.href='#download'">Download</button>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <div class="kicker">OPEN • TRANSPARENT • FUTURE‑PROOF</div>
+      <h2 class="headline">Quantum‑resistant end‑to‑end messaging for the open web</h2>
+      <p class="lead">Protect conversations today against tomorrow’s quantum attackers. QuantumShield combines vetted post‑quantum algorithms with proven elliptic‑curve primitives to provide hybrid handshakes, seamless Matrix/XMPP compatibility, and optimised client implementations for real‑world deployment.</p>
+
+      <div class="feature-list" style="margin-bottom:18px">
+        <div class="chip">Kyber + Dilithium</div>
+        <div class="chip">Hybrid Handshake</div>
+        <div class="chip">Matrix & XMPP</div>
+        <div class="chip">Mobile‑optimised</div>
+        <div class="chip">Open Source (MIT)</div>
+      </div>
+
+      <div style="display:flex;gap:12px">
+        <button class="btn" onclick="document.getElementById('download').scrollIntoView({behavior:'smooth'})">Get the Reference Client</button>
+        <a class="ghost" href="https://github.com/NtemKenyor/QuantumShield" target="_blank" rel="noopener">View on GitHub</a>
+      </div>
+
+      <div style="margin-top:22px;color:var(--muted);font-size:13px">Project lead: <strong>Ntem Kenyor</strong> — cryptography, open‑source & decentralized systems advocate. See <a href="https://github.com/NtemKenyor/QuantumShield" style="color:var(--accent)">GitHub</a>.</div>
+    </div>
+
+    <div class="card">
+      <div class="client-mock">
+        <div class="client-top">
+          <div style="display:flex;align-items:center;gap:10px"><div class="dot"></div><div style="font-weight:700">QuantumShield</div></div>
+          <div style="margin-left:auto;color:var(--muted);font-size:13px">Connected • Matrix network</div>
+        </div>
+        <div class="contact-row">
+          <div style="display:flex;gap:8px;align-items:center">
+            <div style="width:48px;height:48px;border-radius:10px;background:linear-gradient(180deg,var(--accent),var(--accent-2));display:flex;align-items:center;justify-content:center;color:#04121a;font-weight:800">NK</div>
+            <div>
+              <div style="font-weight:700">Alice</div>
+              <div style="color:var(--muted);font-size:13px">Last seen 3m ago • PQC hybrid</div>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px;margin-top:12px">
+            <div class="message">Hey — this channel now uses Kyber+Dilithium hybrid keys. Test message ✨</div>
+            <div class="message" style="background:transparent;border:1px solid rgba(255,255,255,0.02);color:var(--muted);font-weight:600">System: handshake completed — session keys established</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main>
+    <section id="features">
+      <h2>Key Features</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Hybrid PQC Handshake</h3>
+          <p style="color:var(--muted)">Combines NIST‑standardised PQC KEMs (Kyber) with classical ECC for compatibility and layered security. Migration‑friendly and resistant to harvested‑data attacks.</p>
+        </div>
+        <div class="card">
+          <h3>Protocol Extensions</h3>
+          <p style="color:var(--muted)">Open specifications and reference implementations for Matrix and XMPP. Designed to be respectful of existing clients and to support graceful negotiation.</p>
+        </div>
+        <div class="card">
+          <h3>Mobile & Low‑Power Optimisations</h3>
+          <p style="color:var(--muted)">Benchmarked implementations, platform‑specific optimisations, and fallbacks for constrained devices to keep latency low.</p>
+        </div>
+
+        <div class="card">
+          <h3>Audited & Transparent</h3>
+          <p style="color:var(--muted)">All code is open; we budget for external audits and publish benchmark data and audit reports for community review.</p>
+        </div>
+        <div class="card">
+          <h3>Developer Friendly</h3>
+          <p style="color:var(--muted)">Language‑agnostic libraries (Rust/C bindings) and SDKs for easy integration into existing clients and services.</p>
+        </div>
+        <div class="card">
+          <h3>Usable Security</h3>
+          <p style="color:var(--muted)">Intuitive key management, device onboarding, and recovery flows to ensure real users keep their accounts secure without friction.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="roadmap" style="margin-top:28px">
+      <h2>Roadmap</h2>
+      <div class="roadmap card">
+        <div class="step"><div class="num">1</div><div><strong>Design & Spec (M1–M2)</strong><div style="color:var(--muted)">Algorithm selection, handshake design, Matrix/XMPP extension drafts.</div></div></div>
+        <div class="step"><div class="num">2</div><div><strong>Reference Library & CLI (M2–M4)</strong><div style="color:var(--muted)">Rust/C implementation with liboqs bindings; CLI demo for testing key exchange and messaging.</div></div></div>
+        <div class="step"><div class="num">3</div><div><strong>Client Integrations (M4–M7)</strong><div style="color:var(--muted)">Integrate into Element/Conversations prototypes, mobile optimisations, test deployments.</div></div></div>
+        <div class="step"><div class="num">4</div><div><strong>Audit & Benchmark (M6–M8)</strong><div style="color:var(--muted)">External security audits, performance tuning, publish results.</div></div></div>
+        <div class="step"><div class="num">5</div><div><strong>Release & Outreach (M8+)</strong><div style="color:var(--muted)">Documentation, talks, adoption support for other projects.</div></div></div>
+      </div>
+    </section>
+
+    <section id="download" style="margin-top:28px">
+      <h2>Download & Try</h2>
+      <div class="card">
+        <!-- <p style="color:var(--muted)">Reference builds, examples, and SDKs are published on GitHub. Clone the repo, run the CLI demo, or use the sample Matrix/XMPP bridge to test hybrid handshakes.</p> -->
+         <p>Please not that the example below shows how this app would be built when released. This is a demo:</p>
+        <pre><code>git clone https://github.com/NtemKenyor/QuantumShield
+cd QuantumShield
+cargo build --release
+# Run CLI demo: ./target/release/qs-demo --server matrix.example.org</code></pre>
+        <div style="display:flex;gap:10px;margin-top:12px">
+          <a class="btn" href="https://github.com/NtemKenyor/QuantumShield" target="_blank" rel="noopener">View on GitHub</a>
+          <a class="ghost" href="#get-involved">Contribute</a>
+        </div>
+      </div>
+    </section>
+
+    <section id="get-involved" style="margin-top:28px">
+      <h2>Get Involved</h2>
+      <div class="card">
+        <p style="color:var(--muted)">We welcome contributors: implementers, protocol designers, auditors, and privacy groups. Contributions include: code, performance benchmarks, documentation, testing on devices, and outreach. For maintainers of existing clients, we offer integration guides and small bounties for porting key components.</p>
+        <div style="display:flex;gap:10px;margin-top:8px">
+          <a class="btn" href="mailto:hello@quantumshield.example">Contact Team</a>
+          <a class="ghost" href="https://github.com/NtemKenyor/QuantumShield" target="_blank">Open Issues</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <div class="scene" aria-hidden>
+    <div class="orbit" style="transform:translate(-50%,-52%) rotate(6deg)">
+      <svg viewBox="0 0 400 400" preserveAspectRatio="xMidYMid meet">
+        <g fill="none" stroke="url(#g)" stroke-width="1">
+          <defs>
+            <linearGradient id="g" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#7cf7ff" stop-opacity="0.9"/>
+              <stop offset="1" stop-color="#8a6cff" stop-opacity="0.9"/>
+            </linearGradient>
+          </defs>
+          <circle cx="200" cy="200" r="100" stroke-opacity="0.6"></circle>
+          <circle cx="200" cy="200" r="150" stroke-opacity="0.18"></circle>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div>
+      <strong>QuantumShield</strong>
+      <div style="color:var(--muted);font-size:13px">Open source • Hybrid PQC • Led by Ntem Kenyor</div>
+    </div>
+    <div style="text-align:right">
+      <p>Built with privacy in mind. <a href="#" style="color:var(--accent)">Privacy</a> • <a href="#" style="color:var(--accent)">License</a> • <a href="#" style="color:var(--accent)">Contact</a></p>
+    </div>
+  </footer>
+
+</body>
+</html>
